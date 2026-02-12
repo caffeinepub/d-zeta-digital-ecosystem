@@ -1,0 +1,119 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "D’ZETA Vintage-Modern Homepage at '/' with CTAs, earth-tone styling, and live counters",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Create a dedicated Homepage at '/' with the five required copy sections in the specified order (Hero, value grid, Social & Eco Impact + counters, Explore Our Space zones, footer).",
+      "acceptanceCriteria": [
+        "Navigating to '/' renders a homepage (not the Mini Museum page).",
+        "All five sections are present and appear in the order provided by the user.",
+        "Hero section includes 2 CTA buttons labeled exactly as provided in the draft.",
+        "Explore Our Space section lists: Quiet Room, Rooftop Sanctuary, Mini Garden, Heritage Museum, each with its provided description."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/HomePage.tsx",
+          "operation": "create",
+          "description": "Implement the new Homepage UI with the five required sections (in order) and the provided SSS-tier copy, including the Hero (headline/sub-headline/2 CTAs), 3-item value proposition grid, Social & Eco Impact section with a dedicated counter area placeholder, Explore Our Space (370 m²) zone list (Quiet Room, Rooftop Sanctuary, Mini Garden, Heritage Museum + their descriptions), and a professional footer block matching the provided footer copy."
+        },
+        {
+          "path": "frontend/public/assets/generated/dzeta-hero-bg.dim_1600x900.png",
+          "operation": "create",
+          "description": "Add the generated hero background image asset to be used by the Homepage hero section (wire it in via the Homepage component)."
+        },
+        {
+          "path": "frontend/public/assets/generated/dzeta-logo.dim_512x512.png",
+          "operation": "create",
+          "description": "Add the generated D’ZETA logo asset to be used in the Homepage hero and/or footer branding (wire it in via the Homepage component)."
+        },
+        {
+          "path": "frontend/public/assets/generated/dzeta-origin-map.dim_1200x800.png",
+          "operation": "create",
+          "description": "Add the generated origin-map image asset to be used as a supporting visual within the Homepage (e.g., Social & Eco Impact section) without affecting existing Mini Museum behavior."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Wire Homepage CTA buttons to existing TanStack Router routes for menu/ordering and exploration (museum and/or booking).",
+      "acceptanceCriteria": [
+        "Clicking the primary CTA takes the user to an existing route for ordering/menu (e.g., '/menu').",
+        "Clicking the secondary CTA takes the user to an existing route for exploring the space/storytelling (e.g., '/museum' or '/booking').",
+        "Routing uses TanStack Router navigation (no full page refresh)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/HomePage.tsx",
+          "operation": "modify",
+          "description": "Use TanStack Router navigation to wire the primary CTA (label exactly: 'Pesan Sekarang & Pantau Antrean') to the existing Menu/ordering route (e.g., '/menu') and the secondary CTA (label exactly: 'Jelajahi Sudut D'ZETA') to an existing exploration route (prefer '/museum', or '/booking' if the draft implies booking). Ensure navigation is client-side (no full reload)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Apply a Vintage Modern earth-tone style to the Homepage only, using Deep Forest Green / Terracotta / White Smoke accents and serif headings + sans body consistent with Tailwind fonts.",
+      "acceptanceCriteria": [
+        "Homepage headings visibly use the serif font family and body text uses the sans font family.",
+        "Homepage primary accents reflect earth-tone styling (green/terracotta) and remain readable in light mode.",
+        "No immutable frontend hook files are modified."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/HomePage.tsx",
+          "operation": "modify",
+          "description": "Apply page-scoped Tailwind styling to achieve a 'Vintage Modern' look: ensure headings use Tailwind serif font classes and body uses sans classes; use earth-tone accents aligned with the existing theme tokens (primary/accent/secondary) to approximate Deep Forest Green, Terracotta, and White Smoke while keeping the changes limited to the Homepage."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Make '/' the new Homepage across routing and navigation: update index route, fix BottomNav active state, and repoint Back to Home from '/museum' to '/'.",
+      "acceptanceCriteria": [
+        "In frontend/src/App.tsx, the '/' route renders the new Homepage component.",
+        "BottomNav does not highlight “Museum” when the user is on '/'.",
+        "OrderStatusPage “Back to Home” navigates to '/'.",
+        "The Museum page remains accessible at '/museum' and behaves as before."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Update the TanStack Router index route ('/') to render the new HomePage component while preserving the existing '/museum' route pointing to MiniMuseumPage."
+        },
+        {
+          "path": "frontend/src/components/BottomNav.tsx",
+          "operation": "modify",
+          "description": "Adjust active-state logic so that '/' is no longer treated as the Museum route; ensure Museum is only active on '/museum' (and its nested museum paths as appropriate)."
+        },
+        {
+          "path": "frontend/src/pages/OrderStatusPage.tsx",
+          "operation": "modify",
+          "description": "Update both 'Back to Home' buttons to navigate to '/' instead of '/museum' using TanStack Router navigation."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Implement the Homepage Live Counter area using existing metrics queries where possible, with graceful fallbacks and the three required counter labels.",
+      "acceptanceCriteria": [
+        "Homepage shows a 3-item counter block with the exact labels from the draft.",
+        "If backend metrics queries fail or return empty, the homepage still renders without runtime errors and shows a sensible fallback state for the counters.",
+        "If metrics are available, the UI may display real values but must preserve the three draft counter categories/labels."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/home/HomeLiveCounters.tsx",
+          "operation": "create",
+          "description": "Create a Homepage-specific Live Counter component that reads current metrics via existing React Query hooks (e.g., useGetCurrentMetrics) and renders exactly three counter items with the draft labels: '520+ Kilogram Limbah Terolah', '5 Kecamatan Mitra Lokal', and '100% Listrik Terjamin (Backup System)'. Implement defensive rendering so empty/error states display placeholders or the draft simulation values without breaking layout."
+        },
+        {
+          "path": "frontend/src/pages/HomePage.tsx",
+          "operation": "modify",
+          "description": "Integrate the HomeLiveCounters component into the 'The Social & Eco Impact' section and ensure the counter block layout remains stable in loading, empty, and error states."
+        }
+      ]
+    }
+  ]
+}

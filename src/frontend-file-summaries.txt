@@ -1,0 +1,13 @@
+{
+  "frontend/src/hooks/useQueries.ts": "Complete React Query hooks for all backend operations including the new useGetKitchenQueueSummary hook that polls every 5 seconds and invalidates on order mutations.",
+  "frontend/src/hooks/useOrderStatusPolling.ts": "Custom hook that polls order status and queue position, calculates countdown timer, detects status transitions, triggers vibration notifications, and manages in-app notification state for order updates.",
+  "frontend/src/index.css": "Global styles with warm earthy OKLCH color palette (browns, tans, warm neutrals) for both light and dark modes, avoiding blue/purple as primary colors.",
+  "frontend/tailwind.config.js": "Tailwind configuration with warm earthy color tokens, custom font families (Inter and Merriweather), and extended theme settings for the D'ZETA brand aesthetic.",
+  "frontend/src/data/menuItems.ts": "Static menu data containing all 14 menu items with categories, names, descriptions, and price variants (hot/ice/default) as provided by the user.",
+  "frontend/src/pages/MenuPage.tsx": "Menu page component displaying categorized menu items in cards and a live kitchen queue summary section with total orders and estimated wait time, polling every 5 seconds.",
+  "frontend/src/App.tsx": "Main app component with TanStack Router configuration where '/' now renders HomePage and '/museum' renders MiniMuseumPage, preserving all existing routes.",
+  "frontend/src/components/BottomNav.tsx": "Bottom navigation bar with four items (Menu, Museum, Booking, Loyalty) where Museum is only active on '/museum' path, not on '/'.",
+  "frontend/src/pages/HomePage.tsx": "New homepage component with five sections (Hero with CTAs, Digital Edge value grid, Social & Eco Impact with live counters, Explore Our Space zones, and professional footer) using vintage-modern earth-tone styling with serif headings and sans body text.",
+  "frontend/src/components/home/HomeLiveCounters.tsx": "Live counter component displaying three impact metrics (520+ kg waste processed, 5 districts, 100% power uptime) with graceful fallback rendering and defensive error handling.",
+  "frontend/src/pages/OrderStatusPage.tsx": "Order status tracking page with real-time polling, queue position display, and \"Back to Home\" button now navigating to '/' instead of '/museum'."
+}
