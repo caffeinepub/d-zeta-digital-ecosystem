@@ -1,13 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Replace the current index page with a branded D’ZETA Homepage that uses the provided five-section copy, vintage-modern earth-tone styling, and correct navigation behavior.
+**Goal:** Add secure Internet Identity-based admin authentication and authorization so only admins can access and use the /admin dashboard end-to-end.
 
 **Planned changes:**
-- Create a new Homepage component rendered at route `/` with five sections in the user-specified order: Hero (headline, sub-headline, 2 CTAs), “The Digital Edge” 3-item grid, “The Social & Eco Impact” section with a 3-item live counter area, “Explore Our Space (370 m²)” with the four zones and descriptions, and a footer matching the provided footer copy.
-- Wire Hero CTA buttons to existing TanStack Router routes: primary CTA to an existing menu/ordering route; secondary CTA to an existing exploration route (museum and/or booking), using client-side navigation.
-- Apply “Vintage Modern” homepage-only styling using earth tones (Deep Forest Green, Terracotta, White Smoke) and serif headings + sans body fonts consistent with current Tailwind configuration.
-- Update routing/navigation assumptions now that `/` is the Homepage: ensure `/museum` remains the Museum page, adjust BottomNav active-state so “Museum” is not active on `/`, and update any “Back to Home” link (e.g., OrderStatusPage) to go to `/`.
-- Implement the Homepage live counter block with the three draft counter labels, using existing metrics where available and falling back gracefully to placeholders (e.g., `—`) if metrics are missing/unavailable.
+- Add an admin-only route gate for `/admin` that prompts logged-out users to sign in with Internet Identity, blocks signed-in non-admins with an access denied screen, and renders the dashboard only for authenticated admins.
+- Implement/verify backend admin authorization support, including an `isCallerAdmin` query and admin-only guards on all admin dashboard data/mutation methods.
+- Add a secure one-time bootstrap/claim mechanism to establish the first admin after deployment, with developer-facing comments describing the expected flow.
+- Ensure the existing admin dashboard (at minimum Orders/Queue and Analytics panels) loads, fetches data, and performs mutations successfully for admins, and shows handled error states for non-admin attempts.
 
-**User-visible outcome:** Visiting `/` shows the new D’ZETA Homepage with the five requested sections and styling; the two CTAs navigate to existing ordering and exploration routes without page refresh; counters display the three categories with safe fallbacks; navigation reflects `/` as Home while `/museum` remains accessible.
+**User-visible outcome:** Visiting `/admin` prompts Internet Identity login when logged out; after signing in, admins can view and use the admin dashboard (including Orders/Queue updates and Analytics), while non-admin users see an access denied/handled error experience.

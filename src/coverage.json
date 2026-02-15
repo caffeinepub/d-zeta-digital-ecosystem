@@ -1,91 +1,76 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-12T09:38:59.628Z",
+  "generatedAt": "2026-02-13T00:52:15.254Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 5,
-    "implemented": 5,
+    "total": 4,
+    "implemented": 2,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Create a new dedicated Homepage at route '/' that implements the provided homepage copywriting as five sections in this order: (1) Hero section with headline, sub-headline, and two CTA buttons, (2) “The Digital Edge” value proposition grid with three feature blurbs, (3) “The Social & Eco Impact” section with body text and a live counter area, (4) “Explore Our Space (370 m²)” section listing the four zones with short descriptions, (5) a professional footer block matching the provided footer copy.",
+        "summary": "Ensure the /admin route is protected by an admin-only gate that (1) prompts unauthenticated users to log in with Internet Identity, (2) blocks authenticated non-admin users with an access denied message, and (3) renders the admin dashboard only for authenticated admin users.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/HomePage.tsx",
-          "frontend/public/assets/generated/dzeta-hero-bg.dim_1600x900.png",
-          "frontend/public/assets/generated/dzeta-logo.dim_512x512.png",
-          "frontend/public/assets/generated/dzeta-origin-map.dim_1200x800.png"
+          "frontend/src/components/auth/AdminGate.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/pages/HomePage.tsx"
+          "frontend/src/components/auth/AdminGate.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Wire the homepage CTAs to existing routes: the primary CTA should navigate to the Menu/ordering experience, and the secondary CTA should navigate to an exploration experience (Mini Museum and/or booking) using the existing TanStack Router routes.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/HomePage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/HomePage.tsx"
-        ]
+        "summary": "Implement/verify backend admin authorization APIs required by the frontend admin gate and admin dashboard, including an isCallerAdmin query and ensuring all admin dashboard data/actions are guarded by admin permissions.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       },
       {
         "id": "REQ-3",
-        "summary": "Apply the requested “Vintage Modern” look to the homepage (and only homepage if global theme changes are risky), using earth-tone styling aligned to the provided palette guidance: Deep Forest Green, Terracotta, and White Smoke; and use a serif headline + sans-serif body pairing consistent with the current Tailwind font configuration.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/HomePage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/HomePage.tsx"
-        ]
+        "summary": "Add a secure bootstrap mechanism to assign at least one initial admin so the admin dashboard can be accessed after deployment (without manual code edits), and document the expected flow in developer-facing comments.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       },
       {
         "id": "REQ-4",
-        "summary": "Update routing and navigation behaviors to reflect that '/' is now the Homepage: change the index route component to the new Homepage, update BottomNav active-state logic so it no longer treats '/' as the Museum route, and update any “Back to Home” navigation that currently points to '/museum' to instead point to '/'.",
+        "summary": "Ensure the admin dashboard loads and its existing panels can fetch data and perform mutations end-to-end (as currently implemented), including at minimum the Orders/Queue panel and Analytics panel.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/BottomNav.tsx",
-          "frontend/src/pages/OrderStatusPage.tsx"
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
+          "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
+          "frontend/src/pages/AdminDashboardPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/BottomNav.tsx",
-          "frontend/src/pages/OrderStatusPage.tsx"
-        ]
-      },
-      {
-        "id": "REQ-5",
-        "summary": "Implement the Homepage “Live Counter” area using existing available metrics queries/components where possible, with graceful fallbacks if metrics are unavailable (e.g., show placeholders or ‘—’ rather than breaking layout). Counters must include the three items from the draft: ‘520+ Kilogram Limbah Terolah’, ‘5 Kecamatan Mitra Lokal’, and ‘100% Listrik Terjamin (Backup System)’.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/home/HomeLiveCounters.tsx",
-          "frontend/src/pages/HomePage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/home/HomeLiveCounters.tsx",
-          "frontend/src/pages/HomePage.tsx"
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
+          "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
+          "frontend/src/pages/AdminDashboardPage.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
-    "frontend/src/components/BottomNav.tsx",
-    "frontend/src/components/home/HomeLiveCounters.tsx",
-    "frontend/src/pages/HomePage.tsx",
-    "frontend/src/pages/OrderStatusPage.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/auth/AdminGate.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/AdminDashboardPage.tsx",
+    "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
+    "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

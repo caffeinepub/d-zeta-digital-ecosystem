@@ -1,73 +1,106 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-12T09:38:59.625Z",
-  "summary": "Diff implements a new HomePage routed at '/', wires CTAs via TanStack Router, updates BottomNav active-state logic, updates OrderStatusPage “Back to Home” to '/', and adds a HomeLiveCounters component with fallback behavior. However, due to truncation, exact homepage copy/section ordering and zone descriptions/footer copy cannot be fully verified. There are also several extra changes (menu data/page, polling hooks, global theme/palette updates) not explicitly requested.",
+  "generatedAt": "2026-02-13T00:52:15.252Z",
+  "summary": "Frontend implements an AdminGate UI flow (login prompt, admin check, access denied/error states) and wraps AdminDashboardPage with it, plus adds error handling in Orders/Queue and Analytics panels. However, the diff evidence is insufficient to confirm backend admin APIs/guards and a secure bootstrap admin-claim mechanism, and there are many unrelated frontend changes (homepage, theming, menu, routing) not requested by the BuildRequest.",
   "missing_requirements": [
     {
       "id": "REQ-1",
-      "requirement": "Homepage implements the provided homepage copywriting as five sections in the required order, including the exact CTA labels, the four zone names with their provided descriptions, and a footer matching the provided footer copy.",
-      "reason": "HomePage.tsx content is truncated; while the file summary claims five sections exist, the diff excerpt does not provide enough text to confirm exact copy, exact CTA labels, full section order, zone descriptions, or footer copy match the draft exactly.",
+      "requirement": "Ensure the /admin route is protected by an admin-only gate that prompts unauthenticated users to log in with Internet Identity, blocks authenticated non-admin users, and renders the dashboard only for authenticated admins.",
+      "reason": "AdminGate is implemented and used in AdminDashboardPage, but the diff summary does not show router-level protection or that the /admin route is actually wired to AdminDashboardPage; no /admin route configuration change is shown in the provided file contents.",
       "evidence": [
-        "frontend/src/pages/HomePage.tsx (truncated)",
-        "frontend-file-summaries.txt (describes 5 sections but does not show exact copy)"
+        "frontend/src/pages/AdminDashboardPage.tsx",
+        "frontend/src/components/auth/AdminGate.tsx",
+        "frontend-file-summaries.txt (mentions frontend/src/App.tsx but does not show /admin route wiring)"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "requirement": "Implement/verify backend admin authorization APIs required by the frontend (including isCallerAdmin) and ensure all admin dashboard data/actions are guarded by admin permissions.",
+      "reason": "Frontend references useIsCallerAdmin/useGetAdminOrdersQueue/useGetAdminAnalytics and updateOrderStatus, but the backend diff is truncated and does not show an isCallerAdmin query or explicit admin-guards on admin endpoints (orders queue, analytics, mutations).",
+      "evidence": [
+        "backend/main.mo (truncated; only shows AccessControl/MixinAuthorization initialization/imports)",
+        "frontend/src/components/auth/AdminGate.tsx (calls useIsCallerAdmin)",
+        "frontend/src/hooks/useQueries.ts (truncated; shows updateOrderStatus calling actor.updateOrderStatus; admin hooks are referenced in frontend-file-summaries.txt but not visible here)"
       ]
     },
     {
       "id": "REQ-3",
-      "requirement": "Homepage earth-tone styling aligned to Deep Forest Green, Terracotta, and White Smoke accents (readable in light mode).",
-      "reason": "The Live Counter styling uses a blue accent (text-blue-600 / bg-blue-50) for the “100% Listrik Terjamin (Backup System)” counter, which is not part of the requested earth-tone palette guidance.",
+      "requirement": "Add a secure bootstrap mechanism to assign at least one initial admin after deployment (one-time claim/initialization) and document the flow in developer-facing comments.",
+      "reason": "No added migration file and the visible/truncated backend diff does not show any bootstrap/claim flow or developer-facing comments describing such a flow.",
       "evidence": [
-        "frontend/src/components/home/HomeLiveCounters.tsx"
+        "backend/main.mo (truncated; no bootstrap/claim mechanism shown)",
+        "File diff summary (no backend/migration.mo added)"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "Ensure admin dashboard panels (at minimum Orders/Queue and Analytics) can fetch data and perform mutations end-to-end, and non-admin calls result in handled error state.",
+      "reason": "Frontend panels include handled error UIs and a mutation call (updateOrderStatus), but the diff does not provide sufficient backend evidence that the corresponding admin endpoints exist, return expected data, and are guarded (and that non-admin calls are rejected in a way the UI handles).",
+      "evidence": [
+        "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
+        "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
+        "backend/main.mo (truncated)"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "New/expanded React Query hooks including a new kitchen queue summary polling hook (useGetKitchenQueueSummary) and broader backend operation hooks.",
-      "reason": "BuildRequest focuses on homepage creation/routing/styling/counters; it does not request adding new query hooks or kitchen queue polling.",
+      "description": "Global restyling/theme changes (warm earthy OKLCH palette) and Tailwind theme/token updates.",
+      "reason": "The BuildRequest is focused on admin login/access control and admin dashboard authorization; no requirement asks for a global redesign or palette change.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/hooks/useQueries.ts)"
+        "frontend/src/index.css (per frontend-file-summaries.txt)",
+        "frontend/tailwind.config.js (per frontend-file-summaries.txt)"
       ]
     },
     {
-      "description": "Order status polling enhancements (countdown calculation, status transition detection, vibration notifications, in-app notification state).",
-      "reason": "Only navigation behavior change requested for OrderStatusPage was updating “Back to Home” to point to '/'.",
+      "description": "New/changed Home page with multiple sections and vintage-modern styling.",
+      "reason": "Not requested; outside the admin login/dashboard access-control scope.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/hooks/useOrderStatusPolling.ts)"
+        "frontend/src/pages/HomePage.tsx (per frontend-file-summaries.txt)"
       ]
     },
     {
-      "description": "Menu page changes including categorized menu display and a live kitchen queue summary section polling every 5 seconds.",
-      "reason": "Not requested; primary focus was building/routing the homepage and wiring CTAs to existing routes.",
+      "description": "New Home live counters component for impact metrics with fallback/defensive rendering.",
+      "reason": "Not requested by admin login/dashboard requirements.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/pages/MenuPage.tsx)"
+        "frontend/src/components/home/HomeLiveCounters.tsx (per frontend-file-summaries.txt)"
       ]
     },
     {
-      "description": "Added/updated static menu dataset containing 14 items.",
-      "reason": "Not requested by the homepage build requirements.",
+      "description": "Menu data expansion to a static list of 14 items and updates to MenuPage with live kitchen queue summary polling.",
+      "reason": "Not requested; explicitly outside the admin-login/dashboard access control requirements.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/data/menuItems.ts)"
+        "frontend/src/data/menuItems.ts (per frontend-file-summaries.txt)",
+        "frontend/src/pages/MenuPage.tsx (per frontend-file-summaries.txt)"
       ]
     },
     {
-      "description": "Global theme/palette and Tailwind configuration changes (earthy OKLCH palette, font families Inter/Merriweather).",
-      "reason": "REQ-3 requests vintage-modern styling; it allows limiting changes to homepage if global changes are risky, but it does not explicitly request altering global CSS/Tailwind tokens.",
+      "description": "Router changes setting '/' to HomePage and '/museum' to MiniMuseumPage, plus navigation behavior updates in BottomNav and OrderStatusPage.",
+      "reason": "Not requested; the BuildRequest only mentions protecting /admin and enabling admin dashboard access.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/index.css)",
-        "frontend-file-summaries.txt (frontend/tailwind.config.js)"
+        "frontend/src/App.tsx (per frontend-file-summaries.txt)",
+        "frontend/src/components/BottomNav.tsx (per frontend-file-summaries.txt)",
+        "frontend/src/pages/OrderStatusPage.tsx (per frontend-file-summaries.txt)"
+      ]
+    },
+    {
+      "description": "Added/updated useOrderStatusPolling hook with vibration notifications and in-app notification state management.",
+      "reason": "Not requested and falls under non-goals adjacent to real-time/notification behavior.",
+      "evidence": [
+        "frontend/src/hooks/useOrderStatusPolling.ts (per frontend-file-summaries.txt)"
       ]
     }
   ],
-  "confidence": 0.64,
+  "confidence": 0.62,
   "changed_files": [
+    "backend/main.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/App.tsx",
-    "frontend/src/components/BottomNav.tsx",
-    "frontend/src/components/home/HomeLiveCounters.tsx",
-    "frontend/src/pages/HomePage.tsx",
-    "frontend/src/pages/OrderStatusPage.tsx",
+    "frontend/src/components/auth/AdminGate.tsx",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/AdminDashboardPage.tsx",
+    "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
+    "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
     "project_state.json"
   ]
 }

@@ -267,6 +267,7 @@ export interface backendInterface {
     redeemLoyaltyPoints(rewardId: string, pointsCost: bigint): Promise<void>;
     requestBooking(request: BookingRequestDto): Promise<BookingStatus>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    secureBootAdmin(firstAdmin: Principal, adminToken: string): Promise<boolean>;
     updateArtifact(artifact: ArtifactContent): Promise<void>;
     updateBookingStatus(user: Principal, bookingId: bigint, status: BookingStatus): Promise<void>;
     updateDeliveryZone(zone: DeliveryZone): Promise<void>;
@@ -822,6 +823,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.saveCallerUserProfile(to_candid_UserProfile_n38(this._uploadFile, this._downloadFile, arg0));
+            return result;
+        }
+    }
+    async secureBootAdmin(arg0: Principal, arg1: string): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.secureBootAdmin(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.secureBootAdmin(arg0, arg1);
             return result;
         }
     }

@@ -225,6 +225,7 @@ export const idlService = IDL.Service({
   'redeemLoyaltyPoints' : IDL.Func([IDL.Text, IDL.Nat], [], []),
   'requestBooking' : IDL.Func([BookingRequestDto], [BookingStatus], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'secureBootAdmin' : IDL.Func([IDL.Principal, IDL.Text], [IDL.Bool], []),
   'updateArtifact' : IDL.Func([ArtifactContent], [], []),
   'updateBookingStatus' : IDL.Func(
       [IDL.Principal, IDL.Nat, BookingStatus],
@@ -462,6 +463,7 @@ export const idlFactory = ({ IDL }) => {
     'redeemLoyaltyPoints' : IDL.Func([IDL.Text, IDL.Nat], [], []),
     'requestBooking' : IDL.Func([BookingRequestDto], [BookingStatus], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'secureBootAdmin' : IDL.Func([IDL.Principal, IDL.Text], [IDL.Bool], []),
     'updateArtifact' : IDL.Func([ArtifactContent], [], []),
     'updateBookingStatus' : IDL.Func(
         [IDL.Principal, IDL.Nat, BookingStatus],

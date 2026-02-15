@@ -1,53 +1,26 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "D’ZETA Digital Ecosystem web/app for a café/space: published v2 and now building a branded homepage plus new customer/admin features (reviews, zonal ordering, ESG impact tracking, storytelling, booking, and real-time queue/order status).",
+  "summary": "Build D'ZETA app starting from homepage, now expanding scope to include an admin login and admin dashboard (with Internet Identity authentication) for managing menu/queue/zones.",
   "architectural_notes": [
-    "Homepage visual/theme direction: Deep Forest Green + Terracotta + White Smoke; vintage-modern style; serif headlines + sans-serif body; mobile-readable.",
-    "architecturalNotesToRemove([])?? no must be array strings. We'll fill proper below."
+    "Use Internet Identity for admin authentication (no admin access exists yet; must be built explicitly)."
   ],
-  "known_issues": [
-    "Build/deploy pipeline hit internal configuration error ('A configuration error has occurred. Please notify the Caffeine team.') causing failed build attempt."
-  ],
-  "isFixRequest": true,
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-create-a-new-dedicated-homepage-at-route-that-implements-the-provided-homepage-copywriting-as-five-sections-in-this-order-1-hero-section-with-headline-sub-headline-and-two-cta-buttons-2-the-digital-edge-value-proposition-grid-with-three-feature-blurbs-3-the-social-eco-impact-section-with-body-text-and-a-live-counter-area-4-explore-our-space-370-m-section-listing-the-four-zones-with-short-descriptions-5-a-professional-footer-block-matching-the-provided-footer-copy",
-      "title": "Create a new dedicated Homepage at route '/' that implements the provided homepage copywriting as five sections in this order: (1) Hero section with headline, sub-headline, and two CTA buttons, (2) “The Digital Edge” value proposition grid with three feature blurbs, (3) “The Social & Eco Impact” section with body text and a live counter area, (4) “Explore Our Space (370 m²)” section listing the four zones with short descriptions, (5) a professional footer block matching the provided footer copy.",
+      "id": "feature-ensure-the-admin-route-is-protected-by-an-admin-only-gate-that-1-prompts-unauthenticated-users-to-log-in-with-internet-identity-2-blocks-authenticated-non-admin-users-with-an-access-denied-message-and-3-renders-the-admin-dashboard-only-for-authenticated-admin-users",
+      "title": "Ensure the /admin route is protected by an admin-only gate that (1) prompts unauthenticated users to log in with Internet Identity, (2) blocks authenticated non-admin users with an access denied message, and (3) renders the admin dashboard only for authenticated admin users.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-wire-the-homepage-ctas-to-existing-routes-the-primary-cta-should-navigate-to-the-menu-ordering-experience-and-the-secondary-cta-should-navigate-to-an-exploration-experience-mini-museum-and-or-booking-using-the-existing-tanstack-router-routes",
-      "title": "Wire the homepage CTAs to existing routes: the primary CTA should navigate to the Menu/ordering experience, and the secondary CTA should navigate to an exploration experience (Mini Museum and/or booking) using the existing TanStack Router routes.",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-apply-the-requested-vintage-modern-look-to-the-homepage-and-only-homepage-if-global-theme-changes-are-risky-using-earth-tone-styling-aligned-to-the-provided-palette-guidance-deep-forest-green-terracotta-and-white-smoke-and-use-a-serif-headline-sans-serif-body-pairing-consistent-with-the-current-tailwind-font-configuration",
-      "title": "Apply the requested “Vintage Modern” look to the homepage (and only homepage if global theme changes are risky), using earth-tone styling aligned to the provided palette guidance: Deep Forest Green, Terracotta, and White Smoke; and use a serif headline + sans-serif body pairing consistent with the current Tailwind font configuration.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-routing-and-navigation-behaviors-to-reflect-that-is-now-the-homepage-change-the-index-route-component-to-the-new-homepage-update-bottomnav-active-state-logic-so-it-no-longer-treats-as-the-museum-route-and-update-any-back-to-home-navigation-that-currently-points-to-museum-to-instead-point-to",
-      "title": "Update routing and navigation behaviors to reflect that '/' is now the Homepage: change the index route component to the new Homepage, update BottomNav active-state logic so it no longer treats '/' as the Museum route, and update any “Back to Home” navigation that currently points to '/museum' to instead point to '/'.",
+      "id": "feature-ensure-the-admin-dashboard-loads-and-its-existing-panels-can-fetch-data-and-perform-mutations-end-to-end-as-currently-implemented-including-at-minimum-the-orders-queue-panel-and-analytics-panel",
+      "title": "Ensure the admin dashboard loads and its existing panels can fetch data and perform mutations end-to-end (as currently implemented), including at minimum the Orders/Queue panel and Analytics panel.",
       "reqIds": [
         "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-the-homepage-live-counter-area-using-existing-available-metrics-queries-components-where-possible-with-graceful-fallbacks-if-metrics-are-unavailable-e-g-show-placeholders-or-rather-than-breaking-layout-counters-must-include-the-three-items-from-the-draft-520-kilogram-limbah-terolah-5-kecamatan-mitra-lokal-and-100-listrik-terjamin-backup-system",
-      "title": "Implement the Homepage “Live Counter” area using existing available metrics queries/components where possible, with graceful fallbacks if metrics are unavailable (e.g., show placeholders or ‘—’ rather than breaking layout). Counters must include the three items from the draft: ‘520+ Kilogram Limbah Terolah’, ‘5 Kecamatan Mitra Lokal’, and ‘100% Listrik Terjamin (Backup System)’.",
-      "reqIds": [
-        "REQ-5"
       ],
       "version": 1
     }
@@ -55,49 +28,34 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add a Reviews section in the menu for both user and admin: users can view and write reviews; admin can manage/review them.",
+      "summary": "Implement admin login and authentication using Internet Identity",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Implement Zonal Ordering & Table Mapping (prompt users where they are seated; map zones/tables to help service).",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Implement 'The Heart' Impact Tracker / ESG Counter that shows impact per order (e.g., organic fertilizer grams) and a live counter section.",
+      "summary": "Build admin dashboard to manage menu, queue (antrean), zones, and related admin functions",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-4",
-      "summary": "Add Gastronomy Digital Storytelling: 'Story' button per menu item showing origin/history and related photos/content (links to Mini Museum content).",
-      "reqIds": [],
+      "summary": "Implement/verify backend admin authorization APIs required by the frontend admin gate and admin dashboard, including an isCallerAdmin query and ensuring all admin dashboard data/actions are guarded by admin permissions.",
+      "reqIds": [
+        "REQ-2"
+      ],
       "status": "pending"
     },
     {
       "id": "AR-5",
-      "summary": "Add Event & Space Booking module with a 'Booking Space' menu and availability calendar for events.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Add Real-time Order Status & Queue Estimator (progress states like received → brewing → on the way).",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Build homepage using the provided SSS-tier copywriting sections (Hero, Digital Edge, Impact, Explore Space, Footer) with vintage-modern earth-tone theme and serif/sans font pairing.",
-      "reqIds": [],
+      "summary": "Add a secure bootstrap mechanism to assign at least one initial admin so the admin dashboard can be accessed after deployment (without manual code edits), and document the expected flow in developer-facing comments.",
+      "reqIds": [
+        "REQ-3"
+      ],
       "status": "pending"
     }
   ],
-  "gameProjectType": "none",
-  "projectName": "D’ZETA Digital Ecosystem",
+  "projectName": "D'ZETA",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

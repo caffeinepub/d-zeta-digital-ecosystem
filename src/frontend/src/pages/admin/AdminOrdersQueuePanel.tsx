@@ -3,22 +3,25 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useGetAdminOrdersQueue, useUpdateOrderStatus } from '../../hooks/useQueries';
 import { OrderStatus } from '../../backend';
-import { Loader2, RefreshCw } from 'lucide-react';
+import { Loader2, RefreshCw, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
 export default function AdminOrdersQueuePanel() {
-  const { data: orders, isLoading, refetch } = useGetAdminOrdersQueue();
+  const { data: orders, isLoading, error, refetch } = useGetAdminOrdersQueue();
   const updateStatus = useUpdateOrderStatus();
 
   const handleStatusUpdate = async (orderId: bigint, status: OrderStatus) => {
     try {
       await updateStatus.mutateAsync({ orderId, status });
       toast.success('Order status updated');
-    } catch (error) {
-      toast.error('Failed to update order status');
+    } catch (error: any) {
+      console.error('Failed to update order status:', error);
+      const errorMessage = error?.message || 'Failed to update order status';
+      toast.error(errorMessage);
     }
   };
 
@@ -27,6 +30,27 @@ export default function AdminOrdersQueuePanel() {
       <Card>
         <CardContent className="py-12 flex justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="py-8">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Failed to load orders queue. {error instanceof Error ? error.message : 'Please try again later.'}
+            </AlertDescription>
+          </Alert>
+          <div className="mt-4 flex justify-center">
+            <Button variant="outline" onClick={() => refetch()}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Retry
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );

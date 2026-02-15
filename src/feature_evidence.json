@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-create-a-new-dedicated-homepage-at-route-that-implements-the-provided-homepage-copywriting-as-five-sections-in-this-order-1-hero-section-with-headline-sub-headline-and-two-cta-buttons-2-the-digital-edge-value-proposition-grid-with-three-feature-blurbs-3-the-social-eco-impact-section-with-body-text-and-a-live-counter-area-4-explore-our-space-370-m-section-listing-the-four-zones-with-short-descriptions-5-a-professional-footer-block-matching-the-provided-footer-copy",
-      "featureTitle": "Create a new dedicated Homepage at route '/' that implements the provided homepage copywriting as five sections in this order: (1) Hero section with headline, sub-headline, and two CTA buttons, (2) “The Digital Edge” value proposition grid with three feature blurbs, (3) “The Social & Eco Impact” section with body text and a live counter area, (4) “Explore Our Space (370 m²)” section listing the four zones with short descriptions, (5) a professional footer block matching the provided footer copy.",
+      "featureId": "feature-ensure-the-admin-route-is-protected-by-an-admin-only-gate-that-1-prompts-unauthenticated-users-to-log-in-with-internet-identity-2-blocks-authenticated-non-admin-users-with-an-access-denied-message-and-3-renders-the-admin-dashboard-only-for-authenticated-admin-users",
+      "featureTitle": "Ensure the /admin route is protected by an admin-only gate that (1) prompts unauthenticated users to log in with Internet Identity, (2) blocks authenticated non-admin users with an access denied message, and (3) renders the admin dashboard only for authenticated admin users.",
       "files": [
-        "frontend/src/pages/HomePage.tsx"
+        "frontend/src/components/auth/AdminGate.tsx",
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -23,54 +24,13 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-wire-the-homepage-ctas-to-existing-routes-the-primary-cta-should-navigate-to-the-menu-ordering-experience-and-the-secondary-cta-should-navigate-to-an-exploration-experience-mini-museum-and-or-booking-using-the-existing-tanstack-router-routes",
-      "featureTitle": "Wire the homepage CTAs to existing routes: the primary CTA should navigate to the Menu/ordering experience, and the secondary CTA should navigate to an exploration experience (Mini Museum and/or booking) using the existing TanStack Router routes.",
+      "featureId": "feature-ensure-the-admin-dashboard-loads-and-its-existing-panels-can-fetch-data-and-perform-mutations-end-to-end-as-currently-implemented-including-at-minimum-the-orders-queue-panel-and-analytics-panel",
+      "featureTitle": "Ensure the admin dashboard loads and its existing panels can fetch data and perform mutations end-to-end (as currently implemented), including at minimum the Orders/Queue panel and Analytics panel.",
       "files": [
-        "frontend/src/pages/HomePage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "qr-code@1.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "camera@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-apply-the-requested-vintage-modern-look-to-the-homepage-and-only-homepage-if-global-theme-changes-are-risky-using-earth-tone-styling-aligned-to-the-provided-palette-guidance-deep-forest-green-terracotta-and-white-smoke-and-use-a-serif-headline-sans-serif-body-pairing-consistent-with-the-current-tailwind-font-configuration",
-      "featureTitle": "Apply the requested “Vintage Modern” look to the homepage (and only homepage if global theme changes are risky), using earth-tone styling aligned to the provided palette guidance: Deep Forest Green, Terracotta, and White Smoke; and use a serif headline + sans-serif body pairing consistent with the current Tailwind font configuration.",
-      "files": [
-        "frontend/src/pages/HomePage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "qr-code@1.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "camera@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-routing-and-navigation-behaviors-to-reflect-that-is-now-the-homepage-change-the-index-route-component-to-the-new-homepage-update-bottomnav-active-state-logic-so-it-no-longer-treats-as-the-museum-route-and-update-any-back-to-home-navigation-that-currently-points-to-museum-to-instead-point-to",
-      "featureTitle": "Update routing and navigation behaviors to reflect that '/' is now the Homepage: change the index route component to the new Homepage, update BottomNav active-state logic so it no longer treats '/' as the Museum route, and update any “Back to Home” navigation that currently points to '/museum' to instead point to '/'.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/BottomNav.tsx",
-        "frontend/src/pages/OrderStatusPage.tsx"
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/AdminDashboardPage.tsx",
+        "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
+        "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -84,28 +44,6 @@
       ],
       "testIds": [
         "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-the-homepage-live-counter-area-using-existing-available-metrics-queries-components-where-possible-with-graceful-fallbacks-if-metrics-are-unavailable-e-g-show-placeholders-or-rather-than-breaking-layout-counters-must-include-the-three-items-from-the-draft-520-kilogram-limbah-terolah-5-kecamatan-mitra-lokal-and-100-listrik-terjamin-backup-system",
-      "featureTitle": "Implement the Homepage “Live Counter” area using existing available metrics queries/components where possible, with graceful fallbacks if metrics are unavailable (e.g., show placeholders or ‘—’ rather than breaking layout). Counters must include the three items from the draft: ‘520+ Kilogram Limbah Terolah’, ‘5 Kecamatan Mitra Lokal’, and ‘100% Listrik Terjamin (Backup System)’.",
-      "files": [
-        "frontend/src/components/home/HomeLiveCounters.tsx",
-        "frontend/src/pages/HomePage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "qr-code@1.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "camera@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
       ],
       "confidence": "high"
     }

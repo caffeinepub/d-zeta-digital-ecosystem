@@ -1,131 +1,94 @@
 {
   "kind": "build_request",
-  "title": "Build branded Homepage for D’ZETA using provided SSS-tier copy + vintage-modern earth-tone styling",
-  "priority": "normal",
+  "title": "Implement Admin Login (Internet Identity) and Admin Dashboard Access Control",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Create a new dedicated Homepage at route '/' that implements the provided homepage copywriting as five sections in this order: (1) Hero section with headline, sub-headline, and two CTA buttons, (2) “The Digital Edge” value proposition grid with three feature blurbs, (3) “The Social & Eco Impact” section with body text and a live counter area, (4) “Explore Our Space (370 m²)” section listing the four zones with short descriptions, (5) a professional footer block matching the provided footer copy.",
+      "text": "Ensure the /admin route is protected by an admin-only gate that (1) prompts unauthenticated users to log in with Internet Identity, (2) blocks authenticated non-admin users with an access denied message, and (3) renders the admin dashboard only for authenticated admin users.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2",
           "msg-1"
         ],
         "quotes": [
-          "ini draf Copywriting Homepage SSS-Tier ... Section 1 ... Section 5 ...",
-          "langsung di build yaaa"
+          "ya bangn sekaranggg"
         ]
       },
       "acceptanceCriteria": [
-        "Navigating to '/' renders a homepage (not the Mini Museum page).",
-        "All five sections are present and appear in the order provided by the user.",
-        "Hero section includes 2 CTA buttons labeled exactly as provided in the draft.",
-        "Explore Our Space section lists: Quiet Room, Rooftop Sanctuary, Mini Garden, Heritage Museum, each with its provided description."
+        "Navigating to /admin while logged out shows an admin access required screen with an Internet Identity login button.",
+        "After logging in, /admin shows the dashboard only if the signed-in principal is an admin; otherwise it shows an access denied UI.",
+        "No edits are made to immutable hook/component paths listed in SYSTEM_CONTEXT (compose them instead)."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Wire the homepage CTAs to existing routes: the primary CTA should navigate to the Menu/ordering experience, and the secondary CTA should navigate to an exploration experience (Mini Museum and/or booking) using the existing TanStack Router routes.",
-      "target": "frontend",
+      "text": "Implement/verify backend admin authorization APIs required by the frontend admin gate and admin dashboard, including an isCallerAdmin query and ensuring all admin dashboard data/actions are guarded by admin permissions.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-1"
         ],
         "quotes": [
-          "CTA Buttons:[Pesan Sekarang & Pantau Antrean] [Jelajahi Sudut D'ZETA]"
+          "ya bangn sekaranggg"
         ]
       },
       "acceptanceCriteria": [
-        "Clicking the primary CTA takes the user to an existing route for ordering/menu (e.g., '/menu').",
-        "Clicking the secondary CTA takes the user to an existing route for exploring the space/storytelling (e.g., '/museum' or '/booking').",
-        "Routing uses TanStack Router navigation (no full page refresh)."
+        "Calling isCallerAdmin returns true only for principals with admin permission and false otherwise.",
+        "Admin-only backend methods (e.g., order status updates, content creation, bookings management) trap or reject when called by non-admin principals.",
+        "User-facing (non-admin) endpoints continue to work for non-admin signed-in users without requiring admin permission."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Apply the requested “Vintage Modern” look to the homepage (and only homepage if global theme changes are risky), using earth-tone styling aligned to the provided palette guidance: Deep Forest Green, Terracotta, and White Smoke; and use a serif headline + sans-serif body pairing consistent with the current Tailwind font configuration.",
-      "target": "frontend",
+      "text": "Add a secure bootstrap mechanism to assign at least one initial admin so the admin dashboard can be accessed after deployment (without manual code edits), and document the expected flow in developer-facing comments.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-1"
         ],
         "quotes": [
-          "CEO Pro-Tip: Pastikan UI (tampilan) web lo punya sentuhan Vintage Modern. Pake warna-warna bumi (earth tone) ...",
-          "Warna: Gunakan perpaduan Deep Forest Green ... Terracotta ... White Smoke ...",
-          "Font: Pakai kombinasi Serif ... dan Sans Serif ..."
+          "ya bangn sekaranggg"
         ]
       },
       "acceptanceCriteria": [
-        "Homepage headings visibly use the serif font family and body text uses the sans font family.",
-        "Homepage primary accents reflect earth-tone styling (green/terracotta) and remain readable in light mode.",
-        "No immutable frontend hook files are modified."
+        "A newly deployed canister has a deterministic way to establish the first admin (e.g., one-time initialization/claim flow), preventing the admin dashboard from being permanently inaccessible.",
+        "The bootstrap flow cannot be used by arbitrary principals to gain admin after an admin has already been established.",
+        "Attempting to re-run the bootstrap/claim flow after initialization fails safely (no privilege escalation)."
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Update routing and navigation behaviors to reflect that '/' is now the Homepage: change the index route component to the new Homepage, update BottomNav active-state logic so it no longer treats '/' as the Museum route, and update any “Back to Home” navigation that currently points to '/museum' to instead point to '/'.",
-      "target": "frontend",
+      "text": "Ensure the admin dashboard loads and its existing panels can fetch data and perform mutations end-to-end (as currently implemented), including at minimum the Orders/Queue panel and Analytics panel.",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-1",
-          "msg-2"
+          "msg-1"
         ],
         "quotes": [
-          "oh dan ini bikin homepage nya dulu",
-          "langsung di build yaaa"
+          "ya bangn sekaranggg"
         ]
       },
       "acceptanceCriteria": [
-        "In frontend/src/App.tsx, the '/' route renders the new Homepage component.",
-        "BottomNav does not highlight “Museum” when the user is on '/'.",
-        "OrderStatusPage “Back to Home” navigates to '/'.",
-        "The Museum page remains accessible at '/museum' and behaves as before."
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Implement the Homepage “Live Counter” area using existing available metrics queries/components where possible, with graceful fallbacks if metrics are unavailable (e.g., show placeholders or ‘—’ rather than breaking layout). Counters must include the three items from the draft: ‘520+ Kilogram Limbah Terolah’, ‘5 Kecamatan Mitra Lokal’, and ‘100% Listrik Terjamin (Backup System)’.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "Live Counter (Simulasi Angka):520+ Kilogram Limbah Terolah5 Kecamatan Mitra Lokal100% Listrik Terjamin (Backup System)"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Homepage shows a 3-item counter block with the exact labels from the draft.",
-        "If backend metrics queries fail or return empty, the homepage still renders without runtime errors and shows a sensible fallback state for the counters.",
-        "If metrics are available, the UI may display real values but must preserve the three draft counter categories/labels."
+        "As an admin, opening /admin loads the dashboard page without runtime errors.",
+        "Orders/Queue panel can fetch the admin orders list and update an order status successfully (with UI reflecting the updated state after refresh/invalidation).",
+        "Analytics panel can fetch and display aggregate counts (orders/users/bookings/members) without errors.",
+        "As a non-admin, attempts to call admin fetch/mutation endpoints from the UI result in a handled error state (no blank screen)."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui (read-only shadcn components).",
-    "Do not edit immutable paths listed in SYSTEM_CONTEXT (e.g., frontend/src/hooks/useInternetIdentity.ts(x), frontend/src/hooks/useActor.ts, frontend/src/main.tsx).",
-    "Keep backend as a single Motoko actor; no additional backend services."
+    "Backend must remain a single Motoko actor in backend/main.mo; only add backend/migration.mo if a stable-state upgrade is required.",
+    "Do not edit files under frontend/src/components/ui or other paths listed in SYSTEM_CONTEXT.frontend.immutablePaths; compose them instead.",
+    "Use English for any user-facing text added or changed as part of this build."
   ],
   "nonGoals": [
-    "Implementing the 5 additional “Gong” features (reviews, zonal ordering/table mapping, per-order impact popup, menu-item ‘Story’ modal, and any new booking logic) beyond what is needed to build and route the homepage.",
-    "Adding new authentication providers beyond Internet Identity.",
-    "Real-time/WebSocket features."
+    "Implementing reviews, zonal ordering/table mapping, or any new modules not required for admin login/dashboard access.",
+    "Adding third-party authentication providers (only Internet Identity is allowed).",
+    "Adding real-time communication features (WebSockets, push notifications, chat)."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [
-      "Use English for any user-facing text in the build request."
-    ],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

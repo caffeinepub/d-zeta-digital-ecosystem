@@ -191,6 +191,7 @@ export interface _SERVICE {
   'redeemLoyaltyPoints' : ActorMethod<[string, bigint], undefined>,
   'requestBooking' : ActorMethod<[BookingRequestDto], BookingStatus>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'secureBootAdmin' : ActorMethod<[Principal, string], boolean>,
   'updateArtifact' : ActorMethod<[ArtifactContent], undefined>,
   'updateBookingStatus' : ActorMethod<
     [Principal, bigint, BookingStatus],

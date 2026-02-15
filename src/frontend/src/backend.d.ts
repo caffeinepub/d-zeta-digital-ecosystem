@@ -184,6 +184,7 @@ export interface backendInterface {
     redeemLoyaltyPoints(rewardId: string, pointsCost: bigint): Promise<void>;
     requestBooking(request: BookingRequestDto): Promise<BookingStatus>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    secureBootAdmin(firstAdmin: Principal, adminToken: string): Promise<boolean>;
     updateArtifact(artifact: ArtifactContent): Promise<void>;
     updateBookingStatus(user: Principal, bookingId: bigint, status: BookingStatus): Promise<void>;
     updateDeliveryZone(zone: DeliveryZone): Promise<void>;

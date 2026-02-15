@@ -1,15 +1,38 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import { useGetAdminAnalytics } from '../../hooks/useQueries';
-import { Loader2, Users, ShoppingCart, Calendar, Award } from 'lucide-react';
+import { Loader2, Users, ShoppingCart, Calendar, Award, AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function AdminAnalyticsPanel() {
-  const { data: analytics, isLoading } = useGetAdminAnalytics();
+  const { data: analytics, isLoading, error, refetch } = useGetAdminAnalytics();
 
   if (isLoading) {
     return (
       <Card>
         <CardContent className="py-12 flex justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="py-8">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Failed to load analytics. {error instanceof Error ? error.message : 'Please try again later.'}
+            </AlertDescription>
+          </Alert>
+          <div className="mt-4 flex justify-center">
+            <Button variant="outline" onClick={() => refetch()}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Retry
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );

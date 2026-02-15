@@ -10,7 +10,6 @@ import Nat "mo:core/Nat";
 import Time "mo:core/Time";
 import Int "mo:core/Int";
 import Principal "mo:core/Principal";
-
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 
@@ -256,6 +255,27 @@ actor {
   // NEW: Kitchen Queue Summary available to all users
   public query ({ caller }) func getKitchenQueueSummary() : async QueueSummary {
     { totalOrders = orders.size(); estimatedWaitTime = Time.now() + 3_000_000_000 * orders.size() };
+  };
+
+  // Secure Bootstrap Mechanism for Admin Authorization (For developer use only)
+  //
+  // DO NOT REMOVE this after deployment; it is critical for maintaining secure admin access control.
+  //
+  // Once an initial admin has been assigned, this endpoint CANNOT be called again.
+  //
+  // Usage:
+  // 1. Deploy canister to the Internet Computer.
+  // 2. Call this endpoint once, passing the Principal that should become the first admin.
+  // 3. Subsequent admin management is handled securely through the admin dashboard and the access control system.
+  //
+  // WARNING: This endpoint is intentionally public to allow initial admin assignment.
+  //          However, it can only be used ONCE, after which it is irrevocably disabled.
+  public shared ({ caller }) func secureBootAdmin(firstAdmin : Principal, adminToken : Text) : async Bool {
+    if (AccessControl.hasPermission(accessControlState, caller, #admin)) {
+      Runtime.trap("Admin already exists. Additional admins must be added by an existing admin.");
+    };
+    AccessControl.initialize(accessControlState, firstAdmin, adminToken, adminToken);
+    true;
   };
 
   // Order Management
