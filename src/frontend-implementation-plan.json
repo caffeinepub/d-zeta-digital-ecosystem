@@ -1,58 +1,53 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Admin route protection with Internet Identity login and robust admin dashboard data loading",
+  "title": "D'ZETA rebuild: fix frontend build/runtime integration and admin API wiring",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Protect /admin with an admin-only gate that prompts Internet Identity login, blocks non-admins, and renders the dashboard only for admins.",
+      "summary": "Resolve React↔Motoko integration/type mismatches so the app compiles cleanly and loads without fatal errors.",
       "acceptanceCriteria": [
-        "Navigating to /admin while logged out shows an admin access required screen with an Internet Identity login button.",
-        "After logging in, /admin shows the dashboard only if the signed-in principal is an admin; otherwise it shows an access denied UI.",
-        "No edits are made to immutable hook/component paths listed in SYSTEM_CONTEXT (compose them instead)."
+        "Frontend compiles with TypeScript without errors.",
+        "Generated frontend backend bindings match the Motoko canister interface (no missing methods referenced by the frontend).",
+        "App starts without a blank screen or console-fatal errors on initial load."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/backend.d.ts",
+          "operation": "modify",
+          "description": "Update the generated/checked-in canister TypeScript interface to match what the frontend actually calls (notably add the access-control initialization method invoked during actor creation: `_initializeAccessControlWithSecret(adminToken: string): Promise<void>`). Also align Principal typing/imports with the rest of the frontend so Order.customer and other Principal values typecheck correctly. This closes Candid/actor method mismatch compile errors."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Adjust admin-related React Query hooks (and any related types) to rely on the corrected backend typings, and ensure their enabled/retry behavior cannot cause console-fatal errors during initial app load when the actor is not available yet (e.g., keep queries disabled until actor exists; keep retry=false for admin-only queries)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Ensure the existing admin UI can call required admin APIs and that access-control initialization invoked by actor setup does not break admin screens.",
+      "acceptanceCriteria": [
+        "Calling isCallerAdmin from an authenticated identity returns a boolean and does not trap for valid callers.",
+        "Admin Orders/Queue panel can fetch orders (getAdminOrdersQueue) and update order status successfully (updateOrderStatus) when logged in as an admin.",
+        "Admin Analytics panel can fetch analytics successfully (getAdminAnalytics) when logged in as an admin.",
+        "Any access-control initialization call made by the frontend actor initialization succeeds (or is safely a no-op) and does not prevent the app from loading."
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/auth/AdminGate.tsx",
           "operation": "modify",
-          "description": "Adjust the admin gating flow to avoid showing a loading spinner for logged-out users (show the Admin Access Required + login UI immediately when unauthenticated), and only check admin status after an Internet Identity session exists. Use the selected \"authorization\" component capabilities (Internet Identity-based auth + role checks via isCallerAdmin) to support the gate. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Update the useIsCallerAdmin query hook to support being conditionally enabled (so admin checks only run after authentication), and ensure it does not indefinitely block rendering when unauthenticated. Keep user-facing text in English. Use the selected \"authorization\" component capability of role-based access checks (isCallerAdmin) via authenticated actor calls. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Ensure the admin dashboard and key panels (Orders/Queue, Analytics) fetch and mutate successfully for admins, and show handled error states for non-admin/unauthorized calls.",
-      "acceptanceCriteria": [
-        "As an admin, opening /admin loads the dashboard page without runtime errors.",
-        "Orders/Queue panel can fetch the admin orders list and update an order status successfully (with UI reflecting the updated state after refresh/invalidation).",
-        "Analytics panel can fetch and display aggregate counts (orders/users/bookings/members) without errors.",
-        "As a non-admin, attempts to call admin fetch/mutation endpoints from the UI result in a handled error state (no blank screen)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Harden admin React Query hooks (useGetAdminOrdersQueue, useGetAdminAnalytics, useUpdateOrderStatus) to gracefully surface authorization failures (e.g., set retry to false for admin-only queries, and ensure errors propagate predictably for UI handling) while preserving existing cache invalidation behavior for successful mutations. Use the selected \"authorization\" component capability of handling backend authorization failures gracefully in UI flows. Verify the component's usage instructions before implementing."
+          "description": "Harden admin gating UX around the authorization bootstrap/role-based access control flow: keep graceful handling for errors from `isCallerAdmin`, and when authenticated-but-not-admin, show a clear, non-blocking guidance message about the admin bootstrap token flow (e.g., instruct that an admin token may be required via the existing URL hash parameter used by actor initialization). Use the selected \"authorization\" component’s role-based access-control expectations for admin gating and error handling. Verify the component's usage instructions before implementing."
         },
         {
           "path": "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
           "operation": "modify",
-          "description": "Add explicit handled UI states for admin orders fetch errors (including unauthorized/non-admin) and ensure the update order status mutation failure shows a clear error message (not a blank screen). Keep all user-facing text in English. Verify the component's usage instructions before implementing."
+          "description": "Ensure the Orders/Queue panel’s fetch and status update flows tolerate authorization traps and display actionable errors (no unhandled promise rejections). Confirm the panel calls `getAdminOrdersQueue` and `updateOrderStatus` with correct types from the updated backend bindings, and that refresh/refetch continues working end-to-end behind AdminGate."
         },
         {
           "path": "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
           "operation": "modify",
-          "description": "Add explicit handled UI states for analytics fetch errors (including unauthorized/non-admin) so the panel never renders a blank/undefined state on failure; keep user-facing text in English. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/AdminDashboardPage.tsx",
-          "operation": "modify",
-          "description": "Verify the dashboard remains fully wrapped by the AdminGate and that rendering of the Orders/Queue and Analytics tabs does not cause runtime errors when admin data is loading or fails (compose UI; do not modify immutable UI library components). Verify the component's usage instructions before implementing."
+          "description": "Ensure the Analytics panel fetch flow handles authorization failures gracefully (no fatal console errors) and uses the corrected backend bindings for `getAdminAnalytics`, including bigint-to-string display stability."
         }
       ]
     }

@@ -1,26 +1,29 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Build D'ZETA app starting from homepage, now expanding scope to include an admin login and admin dashboard (with Internet Identity authentication) for managing menu/queue/zones.",
+  "summary": "Build D’ZETA Space (farm-to-table cafe) app with customer digital menu + cart, admin inventory, event booking, and backend logic for real-time stock/supply-chain deductions, including QR table flow and e-wallet/WhatsApp ordering.",
   "architectural_notes": [
-    "Use Internet Identity for admin authentication (no admin access exists yet; must be built explicitly)."
+    "Frontend prototype target: React/Next.js + Tailwind CSS, mobile-responsive; serif headings + sans-serif body styling",
+    "System needs real-time stock linkage between menu ordering and inventory (warehouse location support)"
   ],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Build/deploy attempt failed previously ('Our AI couldn't handle that request'); user requested to rebuild"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-ensure-the-admin-route-is-protected-by-an-admin-only-gate-that-1-prompts-unauthenticated-users-to-log-in-with-internet-identity-2-blocks-authenticated-non-admin-users-with-an-access-denied-message-and-3-renders-the-admin-dashboard-only-for-authenticated-admin-users",
-      "title": "Ensure the /admin route is protected by an admin-only gate that (1) prompts unauthenticated users to log in with Internet Identity, (2) blocks authenticated non-admin users with an access denied message, and (3) renders the admin dashboard only for authenticated admin users.",
+      "id": "feature-make-the-project-build-and-deploy-successfully-by-resolving-any-compile-time-or-runtime-integration-errors-between-the-react-frontend-and-the-motoko-backend-candid-actor-method-mismatches-missing-exports-type-mismatches-or-route-initialization-issues",
+      "title": "Make the project build and deploy successfully by resolving any compile-time or runtime integration errors between the React frontend and the Motoko backend (Candid/actor method mismatches, missing exports, type mismatches, or route initialization issues).",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-ensure-the-admin-dashboard-loads-and-its-existing-panels-can-fetch-data-and-perform-mutations-end-to-end-as-currently-implemented-including-at-minimum-the-orders-queue-panel-and-analytics-panel",
-      "title": "Ensure the admin dashboard loads and its existing panels can fetch data and perform mutations end-to-end (as currently implemented), including at minimum the Orders/Queue panel and Analytics panel.",
+      "id": "feature-ensure-the-backend-exposes-and-the-frontend-can-call-all-admin-related-apis-required-by-the-existing-admin-ui-iscalleradmin-getadminordersqueue-getadminanalytics-and-any-access-control-initialization-method-invoked-by-the-frontend-actor-initialization",
+      "title": "Ensure the backend exposes and the frontend can call all admin-related APIs required by the existing admin UI: isCallerAdmin, getAdminOrdersQueue, getAdminAnalytics, and any access-control initialization method invoked by the frontend actor initialization.",
       "reqIds": [
-        "REQ-4"
+        "REQ-2"
       ],
       "version": 1
     }
@@ -28,34 +31,62 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Implement admin login and authentication using Internet Identity",
+      "summary": "Customer-facing digital menu with product categories and product cards, including Add to Cart",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Build admin dashboard to manage menu, queue (antrean), zones, and related admin functions",
+      "summary": "Admin Inventory page showing real-time stock by location (e.g., 'Gudang Lantai 1')",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Event booking feature with booking form (e.g., Intimate Wedding, Family Gathering) and date availability for 2nd floor/backyard",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-4",
-      "summary": "Implement/verify backend admin authorization APIs required by the frontend admin gate and admin dashboard, including an isCallerAdmin query and ensuring all admin dashboard data/actions are guarded by admin permissions.",
-      "reqIds": [
-        "REQ-2"
-      ],
+      "summary": "QR-code table flow to open the menu for customers",
+      "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-5",
-      "summary": "Add a secure bootstrap mechanism to assign at least one initial admin so the admin dashboard can be accessed after deployment (without manual code edits), and document the expected flow in developer-facing comments.",
+      "summary": "Payments integration via e-wallet in the customer order flow",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Supply-chain inventory deduction logic: selling products deducts ingredient stock (e.g., flour, yeast)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Order via WhatsApp integration button from the ordering flow",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Define database schema for Users, Products, Inventory, Orders, Bookings to support app workflows",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Verify and harden the initial admin bootstrap flow so that at least one admin can be assigned after deployment using the existing secureBootAdmin mechanism, without requiring code edits, and ensure the flow is compatible with the frontend’s admin token handling.",
       "reqIds": [
         "REQ-3"
       ],
       "status": "pending"
     }
   ],
-  "projectName": "D'ZETA",
+  "projectName": "D’ZETA Space",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

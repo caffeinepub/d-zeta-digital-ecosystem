@@ -170,6 +170,8 @@ actor {
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
 
+  var adminBootstrapped = false;
+
   module Parcel {
     public func compare(parcel1 : Parcel, parcel2 : Parcel) : Order.Order {
       if (parcel1.id < parcel2.id) { return #less };
@@ -271,10 +273,11 @@ actor {
   // WARNING: This endpoint is intentionally public to allow initial admin assignment.
   //          However, it can only be used ONCE, after which it is irrevocably disabled.
   public shared ({ caller }) func secureBootAdmin(firstAdmin : Principal, adminToken : Text) : async Bool {
-    if (AccessControl.hasPermission(accessControlState, caller, #admin)) {
-      Runtime.trap("Admin already exists. Additional admins must be added by an existing admin.");
+    if (adminBootstrapped) {
+      Runtime.trap("Admin already bootstrapped. Additional admins must be added by an existing admin.");
     };
     AccessControl.initialize(accessControlState, firstAdmin, adminToken, adminToken);
+    adminBootstrapped := true;
     true;
   };
 

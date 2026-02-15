@@ -1,58 +1,49 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-13T00:52:15.254Z",
+  "generatedAt": "2026-02-15T04:38:29.234Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
+    "total": 3,
     "implemented": 2,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Ensure the /admin route is protected by an admin-only gate that (1) prompts unauthenticated users to log in with Internet Identity, (2) blocks authenticated non-admin users with an access denied message, and (3) renders the admin dashboard only for authenticated admin users.",
+        "summary": "Make the project build and deploy successfully by resolving any compile-time or runtime integration errors between the React frontend and the Motoko backend (Candid/actor method mismatches, missing exports, type mismatches, or route initialization issues).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/auth/AdminGate.tsx",
+          "frontend/src/backend.d.ts",
           "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/auth/AdminGate.tsx",
+          "frontend/src/backend.d.ts",
           "frontend/src/hooks/useQueries.ts"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Implement/verify backend admin authorization APIs required by the frontend admin gate and admin dashboard, including an isCallerAdmin query and ensuring all admin dashboard data/actions are guarded by admin permissions.",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
+        "summary": "Ensure the backend exposes and the frontend can call all admin-related APIs required by the existing admin UI: isCallerAdmin, getAdminOrdersQueue, getAdminAnalytics, and any access-control initialization method invoked by the frontend actor initialization.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/auth/AdminGate.tsx",
+          "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
+          "frontend/src/pages/admin/AdminAnalyticsPanel.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/auth/AdminGate.tsx",
+          "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
+          "frontend/src/pages/admin/AdminAnalyticsPanel.tsx"
+        ]
       },
       {
         "id": "REQ-3",
-        "summary": "Add a secure bootstrap mechanism to assign at least one initial admin so the admin dashboard can be accessed after deployment (without manual code edits), and document the expected flow in developer-facing comments.",
+        "summary": "Verify and harden the initial admin bootstrap flow so that at least one admin can be assigned after deployment using the existing secureBootAdmin mechanism, without requiring code edits, and ensure the flow is compatible with the frontend’s admin token handling.",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
-      },
-      {
-        "id": "REQ-4",
-        "summary": "Ensure the admin dashboard loads and its existing panels can fetch data and perform mutations end-to-end (as currently implemented), including at minimum the Orders/Queue panel and Analytics panel.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
-          "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
-          "frontend/src/pages/AdminDashboardPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
-          "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
-          "frontend/src/pages/AdminDashboardPage.tsx"
-        ]
       }
     ]
   },
@@ -63,12 +54,8 @@
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
     "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
     "frontend/src/components/auth/AdminGate.tsx",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
     "frontend/src/hooks/useQueries.ts",
-    "frontend/src/pages/AdminDashboardPage.tsx",
     "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
     "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
     "project_state.json",

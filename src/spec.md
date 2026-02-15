@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Add secure Internet Identity-based admin authentication and authorization so only admins can access and use the /admin dashboard end-to-end.
+**Goal:** Re-run the build to ensure the D’ZETA app compiles and deploys successfully, with working end-to-end admin flows between the React frontend and Motoko backend.
 
 **Planned changes:**
-- Add an admin-only route gate for `/admin` that prompts logged-out users to sign in with Internet Identity, blocks signed-in non-admins with an access denied screen, and renders the dashboard only for authenticated admins.
-- Implement/verify backend admin authorization support, including an `isCallerAdmin` query and admin-only guards on all admin dashboard data/mutation methods.
-- Add a secure one-time bootstrap/claim mechanism to establish the first admin after deployment, with developer-facing comments describing the expected flow.
-- Ensure the existing admin dashboard (at minimum Orders/Queue and Analytics panels) loads, fetches data, and performs mutations successfully for admins, and shows handled error states for non-admin attempts.
+- Fix compile-time and runtime integration issues between frontend and backend (Candid/actor interface mismatches, missing exports, type mismatches, and any initialization/route issues causing blank screen or fatal console errors).
+- Ensure the backend exposes and the frontend can successfully call all admin APIs used by the existing admin UI (isCallerAdmin, getAdminOrdersQueue, getAdminAnalytics, updateOrderStatus, and any access-control initialization invoked during actor setup).
+- Verify and harden the one-time admin bootstrap flow via secureBootAdmin so the first admin can be assigned post-deployment, subsequent calls are rejected, and behavior aligns with the frontend’s admin token handling; add clear developer comments in backend/main.mo documenting bootstrap steps/parameters.
 
-**User-visible outcome:** Visiting `/admin` prompts Internet Identity login when logged out; after signing in, admins can view and use the admin dashboard (including Orders/Queue updates and Analytics), while non-admin users see an access denied/handled error experience.
+**User-visible outcome:** The app loads without fatal errors, admin users can bootstrap the first admin once after deployment, and the admin UI can verify admin status, fetch orders/queue, update order status, and load analytics successfully.

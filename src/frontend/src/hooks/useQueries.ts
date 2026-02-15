@@ -510,40 +510,7 @@ export function useAddLoyaltyReward() {
   });
 }
 
-// Admin queries
-export function useGetAdminOrdersQueue() {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<Order[]>({
-    queryKey: ['adminOrdersQueue'],
-    queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.getAdminOrdersQueue();
-    },
-    enabled: !!actor && !isFetching,
-    retry: false,
-  });
-}
-
-export function useGetAdminAnalytics() {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<{
-    totalOrders: bigint;
-    totalUsers: bigint;
-    totalBookings: bigint;
-    totalMembers: bigint;
-  }>({
-    queryKey: ['adminAnalytics'],
-    queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.getAdminAnalytics();
-    },
-    enabled: !!actor && !isFetching,
-    retry: false,
-  });
-}
-
+// Admin queries with enhanced error handling
 export function useIsCallerAdmin() {
   const { actor, isFetching } = useActor();
   const { identity } = useInternetIdentity();
@@ -554,9 +521,65 @@ export function useIsCallerAdmin() {
       if (!actor) return false;
       try {
         return await actor.isCallerAdmin();
-      } catch (error) {
+      } catch (error: any) {
+        // Handle authorization traps gracefully
+        if (error?.message?.includes('Unauthorized') || error?.message?.includes('not initialized')) {
+          return false;
+        }
         console.error('Admin check failed:', error);
-        return false;
+        throw error;
+      }
+    },
+    enabled: !!actor && !isFetching && !!identity,
+    retry: false,
+    staleTime: 30000, // Cache for 30 seconds to reduce repeated calls
+  });
+}
+
+export function useGetAdminOrdersQueue() {
+  const { actor, isFetching } = useActor();
+  const { identity } = useInternetIdentity();
+
+  return useQuery<Order[]>({
+    queryKey: ['adminOrdersQueue'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      try {
+        return await actor.getAdminOrdersQueue();
+      } catch (error: any) {
+        // Provide more context for authorization errors
+        if (error?.message?.includes('Unauthorized')) {
+          throw new Error('Admin access required. Please ensure you are logged in as an admin.');
+        }
+        throw error;
+      }
+    },
+    enabled: !!actor && !isFetching && !!identity,
+    retry: false,
+  });
+}
+
+export function useGetAdminAnalytics() {
+  const { actor, isFetching } = useActor();
+  const { identity } = useInternetIdentity();
+
+  return useQuery<{
+    totalOrders: bigint;
+    totalUsers: bigint;
+    totalBookings: bigint;
+    totalMembers: bigint;
+  }>({
+    queryKey: ['adminAnalytics'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      try {
+        return await actor.getAdminAnalytics();
+      } catch (error: any) {
+        // Provide more context for authorization errors
+        if (error?.message?.includes('Unauthorized')) {
+          throw new Error('Admin access required. Please ensure you are logged in as an admin.');
+        }
+        throw error;
       }
     },
     enabled: !!actor && !isFetching && !!identity,

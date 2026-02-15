@@ -2,10 +2,9 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-ensure-the-admin-route-is-protected-by-an-admin-only-gate-that-1-prompts-unauthenticated-users-to-log-in-with-internet-identity-2-blocks-authenticated-non-admin-users-with-an-access-denied-message-and-3-renders-the-admin-dashboard-only-for-authenticated-admin-users",
-      "featureTitle": "Ensure the /admin route is protected by an admin-only gate that (1) prompts unauthenticated users to log in with Internet Identity, (2) blocks authenticated non-admin users with an access denied message, and (3) renders the admin dashboard only for authenticated admin users.",
+      "featureId": "feature-make-the-project-build-and-deploy-successfully-by-resolving-any-compile-time-or-runtime-integration-errors-between-the-react-frontend-and-the-motoko-backend-candid-actor-method-mismatches-missing-exports-type-mismatches-or-route-initialization-issues",
+      "featureTitle": "Make the project build and deploy successfully by resolving any compile-time or runtime integration errors between the React frontend and the Motoko backend (Candid/actor method mismatches, missing exports, type mismatches, or route initialization issues).",
       "files": [
-        "frontend/src/components/auth/AdminGate.tsx",
         "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
@@ -24,11 +23,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-ensure-the-admin-dashboard-loads-and-its-existing-panels-can-fetch-data-and-perform-mutations-end-to-end-as-currently-implemented-including-at-minimum-the-orders-queue-panel-and-analytics-panel",
-      "featureTitle": "Ensure the admin dashboard loads and its existing panels can fetch data and perform mutations end-to-end (as currently implemented), including at minimum the Orders/Queue panel and Analytics panel.",
+      "featureId": "feature-ensure-the-backend-exposes-and-the-frontend-can-call-all-admin-related-apis-required-by-the-existing-admin-ui-iscalleradmin-getadminordersqueue-getadminanalytics-and-any-access-control-initialization-method-invoked-by-the-frontend-actor-initialization",
+      "featureTitle": "Ensure the backend exposes and the frontend can call all admin-related APIs required by the existing admin UI: isCallerAdmin, getAdminOrdersQueue, getAdminAnalytics, and any access-control initialization method invoked by the frontend actor initialization.",
       "files": [
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/AdminDashboardPage.tsx",
+        "frontend/src/components/auth/AdminGate.tsx",
         "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
         "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx"
       ],
@@ -43,7 +41,7 @@
         "camera@1.0.0"
       ],
       "testIds": [
-        "REQ-4"
+        "REQ-2"
       ],
       "confidence": "high"
     }

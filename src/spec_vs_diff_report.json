@@ -1,94 +1,65 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-13T00:52:15.252Z",
-  "summary": "Frontend implements an AdminGate UI flow (login prompt, admin check, access denied/error states) and wraps AdminDashboardPage with it, plus adds error handling in Orders/Queue and Analytics panels. However, the diff evidence is insufficient to confirm backend admin APIs/guards and a secure bootstrap admin-claim mechanism, and there are many unrelated frontend changes (homepage, theming, menu, routing) not requested by the BuildRequest.",
+  "generatedAt": "2026-02-15T04:38:29.232Z",
+  "summary": "Diff includes substantial frontend UI/UX work (new homepage, routing changes, styling/theme updates, menu data, polling/notifications) and improved admin UI error handling/hooks. Backend changes are truncated; the diff summary does not provide evidence that required admin APIs and the secureBootAdmin one-time bootstrap hardening (and required developer comments) were fully implemented in backend/main.mo.",
   "missing_requirements": [
     {
-      "id": "REQ-1",
-      "requirement": "Ensure the /admin route is protected by an admin-only gate that prompts unauthenticated users to log in with Internet Identity, blocks authenticated non-admin users, and renders the dashboard only for authenticated admins.",
-      "reason": "AdminGate is implemented and used in AdminDashboardPage, but the diff summary does not show router-level protection or that the /admin route is actually wired to AdminDashboardPage; no /admin route configuration change is shown in the provided file contents.",
-      "evidence": [
-        "frontend/src/pages/AdminDashboardPage.tsx",
-        "frontend/src/components/auth/AdminGate.tsx",
-        "frontend-file-summaries.txt (mentions frontend/src/App.tsx but does not show /admin route wiring)"
-      ]
-    },
-    {
       "id": "REQ-2",
-      "requirement": "Implement/verify backend admin authorization APIs required by the frontend (including isCallerAdmin) and ensure all admin dashboard data/actions are guarded by admin permissions.",
-      "reason": "Frontend references useIsCallerAdmin/useGetAdminOrdersQueue/useGetAdminAnalytics and updateOrderStatus, but the backend diff is truncated and does not show an isCallerAdmin query or explicit admin-guards on admin endpoints (orders queue, analytics, mutations).",
+      "requirement": "Ensure the backend exposes and the frontend can call all admin-related APIs required by the existing admin UI: isCallerAdmin, getAdminOrdersQueue, getAdminAnalytics, and any access-control initialization method invoked by the frontend actor initialization.",
+      "reason": "Frontend adds/uses React Query hooks and admin panels that call admin APIs, but the backend diff is truncated and does not show these methods being defined/exported in backend/main.mo, nor does it show any access-control initialization method expected by the frontend actor initialization. From the provided backend snippet, only types/state and authorization mixin inclusion are visible, not the required public methods.",
       "evidence": [
-        "backend/main.mo (truncated; only shows AccessControl/MixinAuthorization initialization/imports)",
-        "frontend/src/components/auth/AdminGate.tsx (calls useIsCallerAdmin)",
-        "frontend/src/hooks/useQueries.ts (truncated; shows updateOrderStatus calling actor.updateOrderStatus; admin hooks are referenced in frontend-file-summaries.txt but not visible here)"
+        "backend/main.mo (truncated)",
+        "frontend/src/hooks/useQueries.ts (truncated)",
+        "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
+        "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
+        "frontend/src/components/auth/AdminGate.tsx (truncated)"
       ]
     },
     {
       "id": "REQ-3",
-      "requirement": "Add a secure bootstrap mechanism to assign at least one initial admin after deployment (one-time claim/initialization) and document the flow in developer-facing comments.",
-      "reason": "No added migration file and the visible/truncated backend diff does not show any bootstrap/claim flow or developer-facing comments describing such a flow.",
+      "requirement": "Verify and harden the initial admin bootstrap flow so that at least one admin can be assigned after deployment using the existing secureBootAdmin mechanism (callable exactly once), and add clear developer-facing comments in backend/main.mo describing bootstrap steps/parameters.",
+      "reason": "Frontend AdminGate mentions secureBootAdmin in troubleshooting text, but the backend diff snippet provides no evidence that secureBootAdmin exists/was hardened to be callable exactly once, nor that calls after bootstrapping are rejected, nor that English developer-facing comments were added to backend/main.mo. The backend snippet only shows an adminBootstrapped flag declaration without any visible logic enforcing the one-time bootstrap behavior.",
       "evidence": [
-        "backend/main.mo (truncated; no bootstrap/claim mechanism shown)",
-        "File diff summary (no backend/migration.mo added)"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "requirement": "Ensure admin dashboard panels (at minimum Orders/Queue and Analytics) can fetch data and perform mutations end-to-end, and non-admin calls result in handled error state.",
-      "reason": "Frontend panels include handled error UIs and a mutation call (updateOrderStatus), but the diff does not provide sufficient backend evidence that the corresponding admin endpoints exist, return expected data, and are guarded (and that non-admin calls are rejected in a way the UI handles).",
-      "evidence": [
-        "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
-        "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
-        "backend/main.mo (truncated)"
+        "backend/main.mo (truncated)",
+        "frontend/src/components/auth/AdminGate.tsx (truncated)"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Global restyling/theme changes (warm earthy OKLCH palette) and Tailwind theme/token updates.",
-      "reason": "The BuildRequest is focused on admin login/access control and admin dashboard authorization; no requirement asks for a global redesign or palette change.",
+      "description": "New/changed app routing and new homepage content (e.g., '/' renders HomePage, '/museum' renders MiniMuseumPage) and related navigation behavior changes.",
+      "reason": "BuildRequest focuses on build/deploy and admin API/bootstrapping fixes, and explicitly lists UI redesign/new customer-facing features as non-goals unless necessary for fixes. These route/homepage changes are not requested by REQ-1/REQ-2/REQ-3.",
       "evidence": [
-        "frontend/src/index.css (per frontend-file-summaries.txt)",
-        "frontend/tailwind.config.js (per frontend-file-summaries.txt)"
+        "frontend-file-summaries.txt (frontend/src/App.tsx, frontend/src/pages/HomePage.tsx, frontend/src/components/BottomNav.tsx)"
       ]
     },
     {
-      "description": "New/changed Home page with multiple sections and vintage-modern styling.",
-      "reason": "Not requested; outside the admin login/dashboard access-control scope.",
+      "description": "Large global visual theme changes (new warm earthy OKLCH palette, Tailwind tokens, font family changes)",
+      "reason": "UI/visual theme redesign beyond what is necessary to fix build/deploy or broken screens is a stated non-goal; no requirement requests brand palette/font overhaul.",
       "evidence": [
-        "frontend/src/pages/HomePage.tsx (per frontend-file-summaries.txt)"
+        "frontend-file-summaries.txt (frontend/src/index.css, frontend/tailwind.config.js)"
       ]
     },
     {
-      "description": "New Home live counters component for impact metrics with fallback/defensive rendering.",
-      "reason": "Not requested by admin login/dashboard requirements.",
+      "description": "Static menu dataset addition/refresh (14 menu items) and Menu page behavior changes (categorized cards, kitchen queue summary polling)",
+      "reason": "Customer-facing menu content/features are not part of the rebuild request (REQ-1..3) and are listed as non-goals for this rebuild request.",
       "evidence": [
-        "frontend/src/components/home/HomeLiveCounters.tsx (per frontend-file-summaries.txt)"
+        "frontend-file-summaries.txt (frontend/src/data/menuItems.ts, frontend/src/pages/MenuPage.tsx)"
       ]
     },
     {
-      "description": "Menu data expansion to a static list of 14 items and updates to MenuPage with live kitchen queue summary polling.",
-      "reason": "Not requested; explicitly outside the admin-login/dashboard access control requirements.",
+      "description": "Order status polling/notification system including vibration notifications and in-app notification state management",
+      "reason": "Not requested by REQ-1..3; adds new customer-facing behavior unrelated to admin bootstrap/API/build integration goals.",
       "evidence": [
-        "frontend/src/data/menuItems.ts (per frontend-file-summaries.txt)",
-        "frontend/src/pages/MenuPage.tsx (per frontend-file-summaries.txt)"
+        "frontend-file-summaries.txt (frontend/src/hooks/useOrderStatusPolling.ts)"
       ]
     },
     {
-      "description": "Router changes setting '/' to HomePage and '/museum' to MiniMuseumPage, plus navigation behavior updates in BottomNav and OrderStatusPage.",
-      "reason": "Not requested; the BuildRequest only mentions protecting /admin and enabling admin dashboard access.",
+      "description": "OrderStatus page navigation change (Back to Home now navigates to '/')",
+      "reason": "Not requested by REQ-1..3; unrelated to admin API/bootstrapping/build integration fixes as specified.",
       "evidence": [
-        "frontend/src/App.tsx (per frontend-file-summaries.txt)",
-        "frontend/src/components/BottomNav.tsx (per frontend-file-summaries.txt)",
-        "frontend/src/pages/OrderStatusPage.tsx (per frontend-file-summaries.txt)"
-      ]
-    },
-    {
-      "description": "Added/updated useOrderStatusPolling hook with vibration notifications and in-app notification state management.",
-      "reason": "Not requested and falls under non-goals adjacent to real-time/notification behavior.",
-      "evidence": [
-        "frontend/src/hooks/useOrderStatusPolling.ts (per frontend-file-summaries.txt)"
+        "frontend-file-summaries.txt (frontend/src/pages/OrderStatusPage.tsx)"
       ]
     }
   ],
@@ -98,7 +69,6 @@
     "frontend-file-summaries.txt",
     "frontend/src/components/auth/AdminGate.tsx",
     "frontend/src/hooks/useQueries.ts",
-    "frontend/src/pages/AdminDashboardPage.tsx",
     "frontend/src/pages/admin/AdminAnalyticsPanel.tsx",
     "frontend/src/pages/admin/AdminOrdersQueuePanel.tsx",
     "project_state.json"

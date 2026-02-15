@@ -1,91 +1,75 @@
 {
   "kind": "build_request",
-  "title": "Implement Admin Login (Internet Identity) and Admin Dashboard Access Control",
-  "priority": "high",
+  "title": "Re-run build: ensure D'ZETA app compiles, deploys, and admin flows work end-to-end",
+  "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Ensure the /admin route is protected by an admin-only gate that (1) prompts unauthenticated users to log in with Internet Identity, (2) blocks authenticated non-admin users with an access denied message, and (3) renders the admin dashboard only for authenticated admin users.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "ya bangn sekaranggg"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Navigating to /admin while logged out shows an admin access required screen with an Internet Identity login button.",
-        "After logging in, /admin shows the dashboard only if the signed-in principal is an admin; otherwise it shows an access denied UI.",
-        "No edits are made to immutable hook/component paths listed in SYSTEM_CONTEXT (compose them instead)."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Implement/verify backend admin authorization APIs required by the frontend admin gate and admin dashboard, including an isCallerAdmin query and ensuring all admin dashboard data/actions are guarded by admin permissions.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "ya bangn sekaranggg"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Calling isCallerAdmin returns true only for principals with admin permission and false otherwise.",
-        "Admin-only backend methods (e.g., order status updates, content creation, bookings management) trap or reject when called by non-admin principals.",
-        "User-facing (non-admin) endpoints continue to work for non-admin signed-in users without requiring admin permission."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Add a secure bootstrap mechanism to assign at least one initial admin so the admin dashboard can be accessed after deployment (without manual code edits), and document the expected flow in developer-facing comments.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "ya bangn sekaranggg"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A newly deployed canister has a deterministic way to establish the first admin (e.g., one-time initialization/claim flow), preventing the admin dashboard from being permanently inaccessible.",
-        "The bootstrap flow cannot be used by arbitrary principals to gain admin after an admin has already been established.",
-        "Attempting to re-run the bootstrap/claim flow after initialization fails safely (no privilege escalation)."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Ensure the admin dashboard loads and its existing panels can fetch data and perform mutations end-to-end (as currently implemented), including at minimum the Orders/Queue panel and Analytics panel.",
+      "text": "Make the project build and deploy successfully by resolving any compile-time or runtime integration errors between the React frontend and the Motoko backend (Candid/actor method mismatches, missing exports, type mismatches, or route initialization issues).",
       "target": "both",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "ya bangn sekaranggg"
+          "ulang build yang tadi"
         ]
       },
       "acceptanceCriteria": [
-        "As an admin, opening /admin loads the dashboard page without runtime errors.",
-        "Orders/Queue panel can fetch the admin orders list and update an order status successfully (with UI reflecting the updated state after refresh/invalidation).",
-        "Analytics panel can fetch and display aggregate counts (orders/users/bookings/members) without errors.",
-        "As a non-admin, attempts to call admin fetch/mutation endpoints from the UI result in a handled error state (no blank screen)."
+        "Frontend compiles with TypeScript without errors.",
+        "Backend compiles in Motoko without errors.",
+        "Generated frontend backend bindings match the Motoko canister interface (no missing methods referenced by the frontend).",
+        "App starts without a blank screen or console-fatal errors on initial load."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Ensure the backend exposes and the frontend can call all admin-related APIs required by the existing admin UI: isCallerAdmin, getAdminOrdersQueue, getAdminAnalytics, and any access-control initialization method invoked by the frontend actor initialization.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "ulang build yang tadi"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Calling isCallerAdmin from an authenticated identity returns a boolean and does not trap for valid callers.",
+        "Admin Orders/Queue panel can fetch orders (getAdminOrdersQueue) and update order status successfully (updateOrderStatus) when logged in as an admin.",
+        "Admin Analytics panel can fetch analytics successfully (getAdminAnalytics) when logged in as an admin.",
+        "Any access-control initialization call made by the frontend actor initialization succeeds (or is safely a no-op) and does not prevent the app from loading."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Verify and harden the initial admin bootstrap flow so that at least one admin can be assigned after deployment using the existing secureBootAdmin mechanism, without requiring code edits, and ensure the flow is compatible with the frontend’s admin token handling.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "ulang build yang tadi"
+        ]
+      },
+      "acceptanceCriteria": [
+        "secureBootAdmin can be called successfully exactly once to establish the first admin.",
+        "After an admin exists, subsequent calls to secureBootAdmin are rejected (trap or return a clear failure), preserving one-time bootstrap behavior.",
+        "Once bootstrapped, isCallerAdmin returns true for the bootstrapped admin principal and false for non-admin principals.",
+        "Developer-facing comments in backend/main.mo clearly describe the expected bootstrap steps and parameters (in English)."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo; only add backend/migration.mo if a stable-state upgrade is required.",
-    "Do not edit files under frontend/src/components/ui or other paths listed in SYSTEM_CONTEXT.frontend.immutablePaths; compose them instead.",
-    "Use English for any user-facing text added or changed as part of this build."
+    "Do not edit files under frontend/immutablePaths (e.g., frontend/src/hooks/useInternetIdentity.ts(x), frontend/src/hooks/useActor.ts, frontend/src/main.tsx, and frontend/src/components/ui). Compose around them instead.",
+    "Keep all Motoko logic within the single actor in backend/main.mo.",
+    "Create backend/migration.mo only if a persistent state upgrade is required; otherwise do not add migrations."
   ],
   "nonGoals": [
-    "Implementing reviews, zonal ordering/table mapping, or any new modules not required for admin login/dashboard access.",
-    "Adding third-party authentication providers (only Internet Identity is allowed).",
-    "Adding real-time communication features (WebSockets, push notifications, chat)."
+    "Adding new customer-facing features like e-wallet payments, WhatsApp ordering, QR table flow, or inventory supply-chain deduction logic (not requested in this rebuild request).",
+    "Redesigning the UI/visual theme beyond what is necessary to fix build/deploy or broken screens.",
+    "Introducing external databases or third-party authentication beyond Internet Identity."
   ],
   "imageRequirements": {
     "required": [],

@@ -1,4 +1,5 @@
 import type { Principal } from "@icp-sdk/core/principal";
+
 export interface Some<T> {
     __kind__: "Some";
     value: T;
@@ -7,6 +8,7 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
+
 export interface OriginMapDistrict {
     id: string;
     farmerPhotoUrl: string;
@@ -14,12 +16,15 @@ export interface OriginMapDistrict {
     name: string;
     description: string;
 }
+
 export interface SocialImpactMetric {
     id: string;
     value: number;
     name: string;
 }
+
 export type Time = bigint;
+
 export interface LoyaltyTransaction {
     id: bigint;
     description: string;
@@ -27,6 +32,7 @@ export interface LoyaltyTransaction {
     isRedemption: boolean;
     points: bigint;
 }
+
 export interface BookingRequest {
     id: bigint;
     status: BookingStatus;
@@ -34,12 +40,14 @@ export interface BookingRequest {
     notes: string;
     dateTime: string;
 }
+
 export interface Artifact {
     id: string;
     title: string;
     audioUrl?: string;
     story: string;
 }
+
 export interface Order {
     id: bigint;
     status: OrderStatus;
@@ -47,31 +55,37 @@ export interface Order {
     timestamp: Time;
     deliverTo?: string;
 }
+
 export interface QueuePosition {
     totalOrders: bigint;
     position: bigint;
     estimatedWaitTime: Time;
 }
+
 export interface ArtifactContent {
     id: string;
     title: string;
     audioUrl?: string;
     story: string;
 }
+
 export interface DeliveryZone {
     name: string;
     description: string;
     zoneId: string;
 }
+
 export interface QueueSummary {
     totalOrders: bigint;
     estimatedWaitTime: Time;
 }
+
 export interface BookingRequestDto {
     zone: string;
     notes: string;
     dateTime: string;
 }
+
 export interface Membership {
     id: bigint;
     name: string;
@@ -80,20 +94,24 @@ export interface Membership {
     isVerified: boolean;
     isVip: boolean;
 }
+
 export interface LoyaltyReward {
     id: string;
     name: string;
     pointsCost: bigint;
 }
+
 export interface UserProfile {
     name: string;
     email?: string;
     phone?: string;
 }
+
 export interface PackageAddOn {
     id: string;
     name: string;
 }
+
 export enum BookingStatus {
     Rescheduled = "Rescheduled",
     RequestedAccess = "RequestedAccess",
@@ -108,6 +126,7 @@ export enum BookingStatus {
     Expired = "Expired",
     Canceled = "Canceled"
 }
+
 export enum OrderStatus {
     Delivering = "Delivering",
     Reserved = "Reserved",
@@ -119,16 +138,17 @@ export enum OrderStatus {
     Cancelled = "Cancelled",
     Completed = "Completed"
 }
+
 export enum UserRole {
     admin = "admin",
     user = "user",
     guest = "guest"
 }
+
 export interface backendInterface {
     addLoyaltyReward(reward: LoyaltyReward): Promise<void>;
     addPackage(packageId: string, packageName: string): Promise<void>;
     addPackageAddOn(addOn: PackageAddOn): Promise<void>;
-    assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     awardLoyaltyPoints(points: bigint, description: string): Promise<{
         newBalance: string;
         transactions?: Array<LoyaltyTransaction>;
@@ -166,7 +186,6 @@ export interface backendInterface {
     getCallerBookings(): Promise<Array<BookingRequest>>;
     getCallerMembership(): Promise<Membership | null>;
     getCallerUserProfile(): Promise<UserProfile | null>;
-    getCallerUserRole(): Promise<UserRole>;
     getClientOrders(): Promise<Array<Order>>;
     getCurrentLoyaltyPoints(): Promise<[bigint, {
             pointsBalance: bigint;

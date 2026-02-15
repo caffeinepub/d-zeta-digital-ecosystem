@@ -18,13 +18,18 @@ export default function AdminAnalyticsPanel() {
   }
 
   if (error) {
+    const isAuthError = error instanceof Error && error.message.includes('Unauthorized');
     return (
       <Card>
         <CardContent className="py-8">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Failed to load analytics. {error instanceof Error ? error.message : 'Please try again later.'}
+              {isAuthError
+                ? 'Admin access required. Please ensure you are logged in as an admin.'
+                : error instanceof Error
+                  ? error.message
+                  : 'Failed to load analytics. Please try again later.'}
             </AlertDescription>
           </Alert>
           <div className="mt-4 flex justify-center">
@@ -41,27 +46,27 @@ export default function AdminAnalyticsPanel() {
   const stats = [
     {
       label: 'Total Orders',
-      value: analytics?.totalOrders.toString() || '0',
+      value: analytics?.totalOrders?.toString() || '0',
       icon: ShoppingCart,
-      color: 'text-blue-600',
+      color: 'text-primary',
     },
     {
       label: 'Total Users',
-      value: analytics?.totalUsers.toString() || '0',
+      value: analytics?.totalUsers?.toString() || '0',
       icon: Users,
-      color: 'text-green-600',
+      color: 'text-accent',
     },
     {
       label: 'Total Bookings',
-      value: analytics?.totalBookings.toString() || '0',
+      value: analytics?.totalBookings?.toString() || '0',
       icon: Calendar,
-      color: 'text-purple-600',
+      color: 'text-secondary',
     },
     {
       label: 'Total Members',
-      value: analytics?.totalMembers.toString() || '0',
+      value: analytics?.totalMembers?.toString() || '0',
       icon: Award,
-      color: 'text-amber-600',
+      color: 'text-muted-foreground',
     },
   ];
 
@@ -69,8 +74,16 @@ export default function AdminAnalyticsPanel() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Customer Analytics</CardTitle>
-          <CardDescription>Overview of your business metrics</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Customer Analytics</CardTitle>
+              <CardDescription>Overview of your business metrics</CardDescription>
+            </div>
+            <Button variant="outline" size="sm" onClick={() => refetch()}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
